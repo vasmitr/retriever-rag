@@ -1,0 +1,42 @@
+{
+  "name": "@repo/agents",
+  "version": "1.0.0",
+  "description": "Langgraph LLM pipelines",
+  "scripts": {
+    "build": "node esbuild.js",
+    "dev": "pnpm build --watch"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/store": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^18.19.44",
+    "@types/uuid": "^10.0.0",
+    "esbuild": "^0.23.0",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.0-rc.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.2.24",
+    "@langchain/langgraph": "^0.0.34",
+    "@langchain/ollama": "^0.0.4",
+    "@langchain/qdrant": "^0.0.5",
+    "@qdrant/js-client-rest": "^1.11.0",
+    "dotenv": "^16.4.5",
+    "langchain": "^0.2.16",
+    "uuid": "^10.0.0"
+  }
+}
