@@ -1,33 +1,15 @@
-import express, { Response } from "express";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const { PORT = 49152 } = process.env;
+import express from "express";
+import retrieve from "./api/retrieve";
+
+const { PORT = 49152, QDRANT_URL } = process.env;
 
 const app = express();
 app.use(express.json());
 
-interface RetriveResult {
-  contents: string[];
-  title: string;
-  description: string;
-}
-app.post("/api/retrieve", async (req, res: Response<RetriveResult[]>) => {
-  try {
-    const query = (req.body?.query || "") as string;
-
-    console.log("Query:", query);
-
-    if (!query) {
-      return res.status(400).json([]);
-    }
-
-    // call agent
-
-    res.json([]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json([]);
-  }
-});
+app.use("/api/retrieve", retrieve);
 
 app.listen(PORT);
 console.log(`Server started on port ${PORT}`);
