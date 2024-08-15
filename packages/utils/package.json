@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "Retrival helpers",
   "scripts": {
-    "build": "node esbuild.js"
+    "build": "node esbuild.js",
+    "dev": "pnpm build --watch"
   },
   "exports": {
-    "./*": {
-      "types": "./src/index.ts",
-      "default": "./dist/index.js"
+    "./fs": {
+      "types": "./src/fs-helpers.ts",
+      "default": "./dist/fs-helpers.js"
+    },
+    "./git": {
+      "types": "./src/git-helpers.ts",
+      "default": "./dist/git-helpers.js"
     }
   },
   "keywords": [],

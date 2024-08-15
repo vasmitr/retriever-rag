@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { OllamaEmbeddings } from "@langchain/ollama";
 import { Document } from "langchain/document";

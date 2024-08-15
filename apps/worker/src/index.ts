@@ -1,7 +1,8 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import cron from "node-cron";
 import { ChangesQueue } from "@repo/store/changes-queue";
-
-import { readFile } from "@repo/utils";
 
 class FileProcessingWorker {
   private queue: ChangesQueue;

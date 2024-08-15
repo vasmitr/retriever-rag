@@ -5,7 +5,7 @@ const watch = process.argv.includes("--watch");
 
 async function main() {
   const ctx = await esbuild.context({
-    entryPoints: ["src/index.ts"],
+    entryPoints: ["src/*.ts"],
     bundle: true,
     platform: "node",
     target: ["node16"],

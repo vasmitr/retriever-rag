@@ -13,8 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@repo/store": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",
     "@types/node": "^18.19.44",
     "@types/node-cron": "^3.0.11",
@@ -25,6 +25,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "node-cron": "^3.0.3"
   }
 }
