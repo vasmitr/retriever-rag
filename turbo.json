@@ -13,6 +13,9 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "serve": {
+      "dependsOn": ["^serve"]
     }
   }
 }

@@ -1,0 +1,39 @@
+{
+  "name": "@repo/store",
+  "version": "1.0.0",
+  "description": "Qdrant vector store with helpers",
+  "scripts": {
+    "build": "node esbuild.js"
+  },
+  "exports": {
+    "./store": {
+      "types": "./src/store.ts",
+      "default": "./dist/store.js"
+    },
+    "./changes-queue": {
+      "types": "./src/changes-queue.ts",
+      "default": "./dist/changes-queue.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^18.19.44",
+    "@types/uuid": "^10.0.0",
+    "esbuild": "^0.23.0",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.0-rc.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@langchain/ollama": "^0.0.4",
+    "@langchain/qdrant": "^0.0.5",
+    "@qdrant/js-client-rest": "^1.11.0",
+    "langchain": "^0.2.16",
+    "uuid": "^10.0.0"
+  }
+}

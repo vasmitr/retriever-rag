@@ -1,0 +1,30 @@
+{
+  "name": "@repo/worker",
+  "version": "1.0.0",
+  "description": "Worker for file indexing",
+  "main": "index.js",
+  "scripts": {
+    "build": "node esbuild.js",
+    "serve": "node dist/index.js",
+    "dev": "pnpm build --watch & PORT=8000 node --watch ./dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/store": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "@types/node": "^18.19.44",
+    "@types/node-cron": "^3.0.11",
+    "esbuild": "^0.23.0",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.0-rc.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "node-cron": "^3.0.3"
+  }
+}
