@@ -1,11 +1,19 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { DockerService } from './docker-service'
+import { StorageService } from './storage-service'
+
+const monorepoRoot = path.resolve(__dirname, '../../../..')
+
+let mainWindow: BrowserWindow | null = null
+let dockerService: DockerService
+let storageService: StorageService
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -18,7 +26,7 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+    mainWindow!.show()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -34,6 +42,88 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+app.on('ready', async () => {
+  storageService = new StorageService()
+  dockerService = new DockerService(monorepoRoot, storageService)
+
+  try {
+    await dockerService.initialize()
+    console.log('DockerService initialized successfully')
+  } catch (error) {
+    console.error('Failed to initialize DockerService:', error)
+  }
+
+  createWindow()
+})
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('activate', () => {
+  if (mainWindow === null) createWindow()
+})
+
+// IPC handlers
+
+ipcMain.handle('docker:get-config', async () => {
+  return dockerService.getConfig()
+})
+
+ipcMain.handle('docker:get-projects', async () => {
+  return dockerService.getProjects()
+})
+
+ipcMain.handle('docker:update-config', async (_, config) => {
+  try {
+    await dockerService.updateConfig(config)
+    return true
+  } catch (error) {
+    console.log('Failed to update Docker config:', error)
+    return false
+  }
+})
+
+ipcMain.handle('docker:update-projects', async (_, projects) => {
+  try {
+    await dockerService.updateProjects(projects)
+    return true
+  } catch (error) {
+    console.log('Failed to update Docker projects:', error)
+    return false
+  }
+})
+
+ipcMain.handle('docker:start-compose', async () => {
+  try {
+    return await dockerService.startCompose()
+  } catch (error) {
+    console.error('Error in docker:start-compose:', error)
+    throw error
+  }
+})
+
+ipcMain.handle('docker:stop-compose', async () => {
+  try {
+    return await dockerService.stopCompose()
+  } catch (error) {
+    console.error('Error in docker:stop-compose:', error)
+    throw error
+  }
+})
+
+ipcMain.handle('docker:update-project-links', async (_, projects) => {
+  try {
+    await dockerService.updateProjects(projects)
+    return 'Project links updated successfully'
+  } catch (error) {
+    console.error('Error in docker:update-project-links:', error)
+    throw error
+  }
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

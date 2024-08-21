@@ -1,8 +1,17 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  startDockerCompose: (config: any, projects: string[]) =>
+    ipcRenderer.invoke('docker:start-compose', { config, projects }),
+  stopDockerCompose: () => ipcRenderer.invoke('docker:stop-compose'),
+
+  getConfig: () => ipcRenderer.invoke('docker:get-config'),
+  getProjects: () => ipcRenderer.invoke('docker:get-projects'),
+  updateProjects: (projects: string[]) => ipcRenderer.invoke('docker:update-projects', projects),
+  updateConfig: (config: any) => ipcRenderer.invoke('docker:update-config', config)
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
