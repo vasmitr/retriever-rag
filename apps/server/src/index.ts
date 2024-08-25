@@ -4,7 +4,7 @@ dotenv.config();
 import express from "express";
 import retrieve from "./api/retrieve";
 
-const { PORT = 49152, QDRANT_URL } = process.env;
+const { PORT = 49152 } = process.env;
 
 const app = express();
 app.use(express.json());

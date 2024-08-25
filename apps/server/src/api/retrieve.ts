@@ -1,39 +1,45 @@
-import express, { Response, Router } from "express";
-import { invoreRetrievalAgent } from "@repo/agents";
+import { Router } from "express";
+import path from "path";
+
+import { invokeRetrievalAgent } from "@repo/agents";
 
 const router = Router();
+const { PROJECTS_PATH = "/data" } = process.env;
 
-interface RetriveResult {
-  contents: string[];
-  title: string;
-  description: string;
-}
-router.post("/", async (req, res: Response<RetriveResult[]>) => {
+router.post("/", async (req, res) => {
   try {
-    const { query } = req.body || {};
+    console.log(req.body);
+    const query = (req.body?.query || "") as string;
+    const projectName = req.body?.project as string;
 
     console.log("Query:", query);
+    console.log("Project:", projectName);
 
-    if (!query) {
-      return res.status(400).json([]);
+    if (!query || !projectName) {
+      return res
+        .status(400)
+        .json({ error: "Query and project name are required" });
     }
 
-    const response = await invoreRetrievalAgent(query);
+    const projectPath = path.join(PROJECTS_PATH, projectName);
+    const result = await invokeRetrievalAgent(query, projectPath);
+    const documents = result.documents || [];
 
-    console.log("Documents found", response.documents?.length);
+    console.log("Documents found", documents.length);
 
     res.json(
-      response.documents?.map((doc: Record<string, any>) => ({
+      documents.map((doc) => ({
         contents: [doc.pageContent],
         title: doc.metadata?.filePath || "",
         description: doc.metadata?.filePath || "",
+        project: projectName,
       }))
     );
-
-    res.json([]);
   } catch (err) {
     console.error(err);
-    res.status(500).json([]);
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing the request" });
   }
 });
 

@@ -24,7 +24,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 COPY --from=builder /app/out/full/ .
 WORKDIR /app/apps/server
 RUN rm -rf dist
-RUN pnpm run build
+RUN pnpm dlx turbo@2 build --filter=@repo/server
 
 
 FROM base AS runner

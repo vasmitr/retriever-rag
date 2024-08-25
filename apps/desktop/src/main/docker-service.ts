@@ -68,7 +68,7 @@ export class DockerService {
               return {
                 type: 'bind',
                 source: project,
-                target: `/app/data/${projectName}`
+                target: `/data/${projectName}`
               }
             })
           ]

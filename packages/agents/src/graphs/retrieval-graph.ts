@@ -1,16 +1,15 @@
 import type { Document } from "@langchain/core/documents";
-import { vectorStore } from "@repo/store/store";
+import { Store } from "@repo/store/store";
 import {
   initialContextChain,
   messageRewriterChain,
   documentGraderChain,
 } from "../chains";
 import { END, MemorySaver, START, StateGraph } from "@langchain/langgraph";
-import { readThree } from "@repo/utils/fs";
-import { RunnableConfig } from "@langchain/core/runnables";
 
 interface AdaptiveRAGGraphState {
   question: string;
+  projectId: string;
   query: string;
   previousQueries: string[];
   generation: string;
@@ -18,9 +17,10 @@ interface AdaptiveRAGGraphState {
   documents: Document[];
 }
 
-const graphState = {
+export const defaultRetrievalGraphState = {
   question: null,
   query: null,
+  projectId: null,
   previousQueries: null,
   generation: null,
   filePaths: null,
@@ -30,11 +30,11 @@ const graphState = {
   },
 };
 
-const retriver = vectorStore.asRetriever();
+const store = new Store();
 
 const retrieve = async (state: AdaptiveRAGGraphState) => {
   console.log("---RETRIEVE---");
-  const documents = await retriver.invoke(state.query);
+  const documents = await store.invokeRetriever(state.projectId, state.query);
 
   return {
     documents: [...(state.documents || []), ...(documents || [])],
@@ -112,7 +112,9 @@ const prepareInitialContext = async (state: AdaptiveRAGGraphState) => {
   return { ...state };
 };
 
-const graph = new StateGraph<AdaptiveRAGGraphState>({ channels: graphState })
+const graph = new StateGraph<AdaptiveRAGGraphState>({
+  channels: defaultRetrievalGraphState,
+})
   .addNode("prepare", prepareInitialContext)
   .addNode("retrieve", retrieve)
   .addNode("grade_documents", gradeDocuments)

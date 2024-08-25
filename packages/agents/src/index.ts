@@ -2,18 +2,33 @@ import { randomUUID } from "crypto";
 import { RunnableConfig } from "@langchain/core/runnables";
 
 import { readThree } from "@repo/utils/fs";
-import { workflow } from "./graphs/retrieval-graph";
+import { defaultRetrievalGraphState, workflow } from "./graphs/retrieval-graph";
 
 const config: RunnableConfig = { configurable: { thread_id: randomUUID() } };
 
-export const invoreRetrievalAgent = async (
+export const invokeRetrievalAgent = async (
   userMessage: string,
-  path = "./"
+  path: string
 ) => {
+  if (!path) {
+    throw new Error("No path provided");
+  }
+
   const filePaths = await readThree(path);
 
+  const pathEntries = path.split("/");
+  const projectId = pathEntries[pathEntries.length - 1];
+
   return workflow.invoke(
-    { question: userMessage, filePaths },
+    {
+      query: null,
+      previousQueries: null,
+      generation: null,
+      documents: null,
+      question: userMessage,
+      filePaths,
+      projectId,
+    },
     {
       ...config,
     }
